@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
@@ -24,3 +25,15 @@ def standard_scale_val(X_val: pd.DataFrame, feature_names: list, scaler):
     X_val_scaled = X_val.copy()
     X_val_scaled[feature_names] = scaler.transform(X_val[feature_names])
     return X_val_scaled
+
+
+def inverse_boxcox(y: np.array(), lambda_: float):
+    '''
+    :param y: Boxcox변환된 강수량
+    :param lambda_: Boxcox lambda
+    :return: 원본 강수량
+    '''
+    if lambda_ == 0:
+        return np.exp(y)
+    else:
+        return (np.exp(np.log(lambda_ * y + 1) / lambda_))

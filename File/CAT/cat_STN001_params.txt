@@ -1,0 +1,7 @@
+max_depth: 5
+reg_lambda: 4.039232975605143
+task_type: GPU
+objective: RMSE
+eval_metric: MAPE
+learning_rate: 0.01
+early_stopping_rounds: 10

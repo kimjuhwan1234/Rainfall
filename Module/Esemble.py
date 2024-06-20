@@ -108,7 +108,7 @@ class Esemble:
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
 
-                'depth': trial.suggest_int('max_depth', 5, 20),
+                'depth': trial.suggest_int('max_depth', 5, 15),
                 'l2_leaf_reg': trial.suggest_float('reg_lambda', 1e-5, 10.0),
             }
             accuracy = self.CatBoost(params)

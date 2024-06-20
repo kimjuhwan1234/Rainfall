@@ -4,8 +4,6 @@ import warnings
 import pandas as pd
 from Module.Esemble import *
 
-
-
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     STN_list = ['STN001', 'STN002', 'STN003', 'STN004', 'STN005', 'STN006', 'STN007', 'STN008', 'STN009', 'STN010',
@@ -21,7 +19,7 @@ if __name__ == "__main__":
         X_train = pd.read_csv(os.path.join(directory, file_list[0]), index_col=0)
         y_train = pd.read_csv(os.path.join(directory, file_list[1]), index_col=0)
 
-        for i in range(3, 4):
+        for i in range(0, 4):
             # {DT=0, lightGBM=1, XGBoost=2, CatBoost=3}
             E = Esemble(i, X_train, X_val, y_train, y_val, 1000, STN)
 
