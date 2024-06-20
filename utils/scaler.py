@@ -37,3 +37,44 @@ def inverse_boxcox(y: np.array, lambda_: float):
         return np.exp(y)
     else:
         return (np.exp(np.log(lambda_ * y + 1) / lambda_))
+
+
+def map_values(value: float):
+    '''
+    :param value: 데이터프레임 요소
+    :return: 강수등급
+    '''
+    if value < 0.1:
+        return 0
+    elif 0.1 <= value < 0.2:
+        return 1
+    elif 0.2 <= value < 0.5:
+        return 2
+    elif 0.5 <= value < 1.0:
+        return 3
+    elif 1.0 <= value < 2.0:
+        return 4
+    elif 2.0 <= value < 5.0:
+        return 5
+    elif 5.0 <= value < 10.0:
+        return 6
+    elif 10.0 <= value < 20.0:
+        return 7
+    elif 20.0 <= value < 30.0:
+        return 8
+    elif value >= 30.0:
+        return 9
+    else:
+        return np.nan  # 조건에 맞지 않는 값은 NaN으로 처리
+
+
+def cal_CSI(csi_table: pd.DataFrame):
+    '''
+    :param csi_table: CSI 데이터프레임
+    :return: CSI
+    '''
+    H = np.trace(csi_table.values) - csi_table.iloc[0, 0]
+    F = csi_table.iloc[:, 1:].sum().sum() - H
+    M = csi_table.iloc[1:, 0].sum()
+    csi = H / (H + F + M)
+    return csi
