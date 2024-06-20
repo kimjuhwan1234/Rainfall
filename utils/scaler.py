@@ -27,7 +27,7 @@ def standard_scale_val(X_val: pd.DataFrame, feature_names: list, scaler):
     return X_val_scaled
 
 
-def inverse_boxcox(y: np.array(), lambda_: float):
+def inverse_boxcox(y: np.array, lambda_: float):
     '''
     :param y: Boxcox변환된 강수량
     :param lambda_: Boxcox lambda

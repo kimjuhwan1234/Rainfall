@@ -12,7 +12,7 @@ if __name__ == "__main__":
     files = sorted(filename for filename in os.listdir(directory) if filename.endswith('.csv'))
 
     X_val = pd.read_csv('Database/val/X_val_norm.csv', index_col=0)
-    y_val = pd.read_csv('Database/val/y_val_norm.csv', index_col=0)
+    y_val = pd.read_csv('Database/val/y_val.csv', index_col=0)
 
     for i, STN in enumerate(STN_list):
         file_list = [sentence for sentence in files if STN in sentence]
