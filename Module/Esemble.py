@@ -66,8 +66,8 @@ class Esemble:
             params = {
                 'criterion': 'friedman_mse',
 
-                'max_features': trial.suggest_float('max_features', 0.1, 0.9),
-                'max_depth': trial.suggest_int('max_depth', 5, 20),
+                'max_features': trial.suggest_float('max_features', 0.3, 0.5),
+                'max_depth': trial.suggest_int('max_depth', 180, 190),
             }
             accuracy = self.DecisionTree(params)
 
