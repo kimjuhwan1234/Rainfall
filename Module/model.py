@@ -8,13 +8,13 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
 
         self.MLP = nn.Sequential(
-            nn.Linear(input_size, hidden_size),
+            nn.Linear(input_size, hidden_size//2),
             nn.ReLU(),
-            nn.Linear(hidden_size, hidden_size//2),
+            nn.Linear(hidden_size//2, hidden_size),
             nn.ReLU(),
         ).double()
-        self.batch_norm = nn.BatchNorm1d(hidden_size // 2, affine=True, track_running_stats=True).double()
-        self.fc = nn.Linear(hidden_size//2, output_size).double()
+        self.batch_norm = nn.BatchNorm1d(hidden_size, affine=True, track_running_stats=True).double()
+        self.fc = nn.Linear(hidden_size, output_size).double()
 
     def forward(self, train, gt=None):
         output = self.MLP(train)
