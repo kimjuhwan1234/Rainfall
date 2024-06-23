@@ -1,7 +1,6 @@
 from torch.nn.functional import mse_loss
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class MLP(nn.Module):
@@ -10,17 +9,16 @@ class MLP(nn.Module):
 
         self.MLP = nn.Sequential(
             nn.Linear(input_size, hidden_size),
-            nn.GELU(),
-            nn.Dropout(0.1),
+            nn.ReLU(),
             nn.Linear(hidden_size, hidden_size//2),
-            nn.GELU(),
+            nn.ReLU(),
         ).double()
-
+        self.batch_norm = nn.BatchNorm1d(hidden_size // 2, affine=True, track_running_stats=True).double()
         self.fc = nn.Linear(hidden_size//2, output_size).double()
 
     def forward(self, train, gt=None):
         output = self.MLP(train)
-        output = self.fc(output)
+        output = self.fc(self.batch_norm(output))
 
         if gt != None:
             # gt = gt.squeeze()
