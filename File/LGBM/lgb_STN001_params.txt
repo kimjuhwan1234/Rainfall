@@ -1,5 +1,5 @@
 max_depth: 5
-reg_lambda: 5.071088839788883
+reg_lambda: 9.997348546964687
 device: gpu
 objective: regression
 metric: mape

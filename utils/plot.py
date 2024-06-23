@@ -33,7 +33,7 @@ def plot_continuous_variable(df: pd.DataFrame, feature: str, method: str, log: b
 
     if log:
         # df[feature]=pd.DataFrame(df[feature]).applymap(lambda x: np.log(x+1))
-        data = pd.Series(stats.boxcox(df[feature] + 1)[0])
+        data = pd.Series(stats.boxcox(df[feature] + 0.0000001)[0])
 
     if scaler:
         scaler = StandardScaler()

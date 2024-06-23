@@ -1,5 +1,5 @@
 max_depth: 5
-reg_lambda: 4.039232975605143
+reg_lambda: 7.668975413419744
 task_type: GPU
 objective: RMSE
 eval_metric: MAPE
