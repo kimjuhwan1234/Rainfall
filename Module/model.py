@@ -18,7 +18,7 @@ class MLP(nn.Module):
 
     def forward(self, train, gt=None):
         output = self.MLP(train)
-        output = self.fc(self.batch_norm(output))
+        output = self.fc(output)
 
         if gt != None:
             # gt = gt.squeeze()
