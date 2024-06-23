@@ -18,10 +18,10 @@ class Execution:
         print(f"Process on GPU: {torch.cuda.current_device()}")
         # logging.info(f"Process on GPU: {torch.cuda.current_device()}")
 
-    def process_file(self, rank, X_train, y_train, X_val, y_val):
+    def process_file(self, rank, X_train, y_train, X_val, y_val, weight_path):
         self.setup(rank)
 
-        trainer = Run(X_train, y_train, X_val, y_val, self.config)
+        trainer = Run(X_train, y_train, X_val, y_val, weight_path, self.config)
         trainer.load_data()
         trainer.run_model()
         trainer.check_validation()

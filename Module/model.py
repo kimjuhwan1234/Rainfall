@@ -13,12 +13,12 @@ class MLP(nn.Module):
             nn.Linear(hidden_size, hidden_size//2),
             nn.ReLU(),
         ).double()
-        # self.batch_norm = nn.BatchNorm1d(hidden_size // 2, affine=True, track_running_stats=True).double()
+        self.batch_norm = nn.BatchNorm1d(hidden_size // 2, affine=True, track_running_stats=True).double()
         self.fc = nn.Linear(hidden_size//2, output_size).double()
 
     def forward(self, train, gt=None):
         output = self.MLP(train)
-        output = self.fc(output)
+        output = self.fc(self.batch_norm(output))
 
         if gt != None:
             # gt = gt.squeeze()
