@@ -75,7 +75,7 @@ class Esemble:
             params = {
                 'device': 'gpu',
                 'objective': 'regression',
-                'metric': 'rmse',
+                'metric': 'mae',
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
@@ -90,7 +90,7 @@ class Esemble:
             params = {
                 'tree_method': 'gpu_hist',
                 'objective': 'reg:squarederror',
-                'eval_metric': 'rmse',
+                'eval_metric': 'mae',
                 'booster': 'gbtree',
                 'eta': 0.01,
                 'early_stopping_rounds': 10,
@@ -104,7 +104,7 @@ class Esemble:
             params = {
                 'task_type': 'GPU',
                 'objective': 'RMSE',
-                'eval_metric': 'RMSE',
+                'eval_metric': 'MAE',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
 
@@ -132,7 +132,7 @@ class Esemble:
             best_params.update({
                 'device': 'gpu',
                 'objective': 'regression',
-                'metric': 'rmse',
+                'metric': 'mae',
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
@@ -150,7 +150,7 @@ class Esemble:
             best_params.update({
                 'tree_method': 'gpu_hist',
                 'objective': 'reg:squarederror',
-                'eval_metric': 'rmse',
+                'eval_metric': 'mae',
                 'booster': 'gbtree',
                 'eta': 0.01,
                 'early_stopping_rounds': 10,
@@ -167,7 +167,7 @@ class Esemble:
             best_params.update({
                 'task_type': 'GPU',
                 'objective': 'RMSE',
-                'eval_metric': 'RMSE',
+                'eval_metric': 'MAE',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
             })
