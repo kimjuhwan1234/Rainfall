@@ -71,7 +71,7 @@ class Run:
             lambda x: x.cpu().detach().numpy() if isinstance(x, torch.Tensor) else x)
         metric_hist_numpy = self.metric_hist.map(
             lambda x: x.cpu().detach().numpy() if isinstance(x, torch.Tensor) else x)
-        early_stop_epoch=len(loss_hist_numpy)
+        early_stop_epoch = len(loss_hist_numpy)
 
         # plot loss progress
         plt.title("Train-Val Loss")

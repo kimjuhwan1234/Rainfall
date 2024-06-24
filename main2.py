@@ -6,6 +6,7 @@ from Module.run import Run
 from utils.parser import config
 from multiprocessing import set_start_method, Process
 
+
 class Execution:
     def __init__(self, directory, saving_path):
         self.config = config

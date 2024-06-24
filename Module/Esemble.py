@@ -132,7 +132,7 @@ class Esemble:
             best_params.update({
                 'device': 'gpu',
                 'objective': 'regression',
-                'metric': 'mape',
+                'metric': 'rmse',
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
@@ -150,7 +150,7 @@ class Esemble:
             best_params.update({
                 'tree_method': 'gpu_hist',
                 'objective': 'reg:squarederror',
-                'eval_metric': 'mape',
+                'eval_metric': 'rmse',
                 'booster': 'gbtree',
                 'eta': 0.01,
                 'early_stopping_rounds': 10,
@@ -167,7 +167,7 @@ class Esemble:
             best_params.update({
                 'task_type': 'GPU',
                 'objective': 'RMSE',
-                'eval_metric': 'MAPE',
+                'eval_metric': 'RMSE',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
             })
