@@ -9,7 +9,7 @@ if __name__ == "__main__":
     STN_list = ['STN001', 'STN002', 'STN003', 'STN004', 'STN005', 'STN006', 'STN007', 'STN008', 'STN009', 'STN010',
                 'STN011', 'STN012', 'STN013', 'STN014', 'STN015', 'STN016', 'STN017', 'STN018', 'STN019', 'STN020']
 
-    GMM_list = [f'GMM{i}' for i in range(14)]
+    GMM_list = [f'GMM{i}' for i in range(15)]
     directory = 'Database/train/'
     files = sorted(filename for filename in os.listdir(directory) if filename.endswith('.csv'))
 
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         X_train = pd.read_csv(os.path.join(directory, file_list[0]), index_col=0)
         y_train = pd.read_csv(os.path.join(directory, file_list[1]), index_col=0)
 
-        for i in range(0, 4):
+        for i in range(0, 3):
             # {DT=0, lightGBM=1, XGBoost=2, CatBoost=3}
             E = Esemble(i, X_train, X_val, y_train, y_val, 1000, code)
 
