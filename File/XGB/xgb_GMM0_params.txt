@@ -1,5 +1,5 @@
 max_depth: 5
-reg_lambda: 9.95751578670509
+reg_lambda: 8.505124652225936
 tree_method: gpu_hist
 objective: reg:squarederror
 eval_metric: mae
