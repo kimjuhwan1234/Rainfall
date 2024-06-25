@@ -2,7 +2,8 @@ import sys
 import time
 import torch
 import pandas as pd
-from sklearn.metrics import r2_score
+from sklearn.metrics import f1_score
+import torch.nn.functional as F
 
 
 class Train_Module:
@@ -38,8 +39,11 @@ class Train_Module:
 
                 output, loss = model(data, gt)
 
+                probabilities = F.softmax(output, 1)
+                _, output = torch.max(probabilities, 1)
+
                 total_loss += loss
-                accuracy = r2_score(gt.cpu().numpy(), output.cpu().detach().numpy())
+                accuracy = f1_score(gt.cpu().numpy(), output.cpu().detach().numpy(), average='weighted')
                 total_accuracy += accuracy
 
             total_loss = total_loss / len_data
@@ -66,8 +70,11 @@ class Train_Module:
             loss.backward()
             opt.step()
 
+            probabilities = F.softmax(output, 1)
+            _, output = torch.max(probabilities, 1)
+
             total_loss += loss
-            accuracy = r2_score(gt.cpu().numpy(), output.cpu().detach().numpy())
+            accuracy = f1_score(gt.cpu().numpy(), output.cpu().detach().numpy(), average='weighted')
             total_accuracy += accuracy
 
         total_loss = total_loss / len_data
@@ -122,7 +129,7 @@ class Train_Module:
                     break
 
             print(f'train loss: {train_loss:.10f}, val loss: {val_loss:.10f}')
-            print(f'R2: {val_accuracy:.4f}, time: {(time.time() - start_time) / 60:.2f}')
+            print(f'F1: {val_accuracy:.4f}, time: {(time.time() - start_time) / 60:.2f}')
             print(' ')
 
         return model, loss_history, accuracy_history

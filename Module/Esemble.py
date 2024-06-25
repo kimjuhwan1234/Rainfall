@@ -1,9 +1,10 @@
 import joblib
-from sklearn.metrics import *
-from xgboost import XGBRegressor
-from lightgbm import LGBMRegressor
-from catboost import CatBoostRegressor
-from sklearn.tree import DecisionTreeRegressor
+import numpy as np
+from sklearn.metrics import log_loss
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+from catboost import CatBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 
 class Esemble:
@@ -15,6 +16,7 @@ class Esemble:
         self.y_test = y_val
         self.num_rounds = num_rounds
         self.name = name
+        self.unique_class = np.unique(y_val)
 
     def save_dict_to_txt(self, file_path, dict):
         with open(file_path, 'w') as f:
@@ -22,49 +24,41 @@ class Esemble:
                 f.write(f'{key}: {value}\n')
 
     def DecisionTree(self, params):
-        bst = DecisionTreeRegressor(**params)
+        bst = DecisionTreeClassifier(**params)
         bst.fit(self.X_train, self.y_train)
-        y_pred = bst.predict(self.X_test)
+        y_pred = bst.predict_proba(self.X_test)
 
-        mape = mean_absolute_percentage_error(self.y_test, y_pred)
-        R_squre = r2_score(self.y_test, y_pred)
-        print("DT R-square:", R_squre)
-        return mape
+        loss = log_loss(self.y_test.values, y_pred)
+        return loss
 
     def lightGBM(self, params):
-        bst = LGBMRegressor(**params, n_estimators=self.num_rounds, verbose_eval=100)
+        bst = LGBMClassifier(**params, n_estimators=self.num_rounds, verbose_eval=100)
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)])
-        y_pred = bst.predict(self.X_test)
+        y_pred = bst.predict_proba(self.X_test)
 
-        mape = mean_absolute_percentage_error(self.y_test, y_pred)
-        R_squre = r2_score(self.y_test, y_pred)
-        print("LGBM R-square:", R_squre)
-        return mape
+        loss = log_loss(self.y_test, y_pred)
+        return loss
 
     def XGBoost(self, params):
-        bst = XGBRegressor(**params, n_estimators=self.num_rounds)
+        bst = XGBClassifier(**params, n_estimators=self.num_rounds)
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
-        y_pred = bst.predict(self.X_test)
+        y_pred = bst.predict_proba(self.X_test)
 
-        mape = mean_absolute_percentage_error(self.y_test, y_pred)
-        R_squre = r2_score(self.y_test, y_pred)
-        print("XGB R-square:", R_squre)
-        return mape
+        loss = log_loss(self.y_test, y_pred)
+        return loss
 
     def CatBoost(self, params):
-        bst = CatBoostRegressor(**params, iterations=self.num_rounds)
+        bst = CatBoostClassifier(**params, iterations=self.num_rounds)
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
-        y_pred = bst.predict(self.X_test)
+        y_pred = bst.predict_proba(self.X_test)
 
-        mape = mean_absolute_percentage_error(self.y_test, y_pred)
-        R_squre = r2_score(self.y_test, y_pred)
-        print("CAT R-square:", R_squre)
-        return mape
+        loss = log_loss(self.y_test, y_pred)
+        return loss
 
     def objective(self, trial):
         if self.method == 0:
             params = {
-                'criterion': 'friedman_mse',
+                'criterion': 'entropy',
 
                 'max_features': trial.suggest_float('max_features', 0.3, 0.5),
                 'max_depth': trial.suggest_int('max_depth', 180, 190),
@@ -74,8 +68,9 @@ class Esemble:
         if self.method == 1:
             params = {
                 'device': 'gpu',
-                'objective': 'regression',
-                'metric': 'mae',
+                'objective': 'multiclass',
+                'metric': 'multi_logloss',
+                'num_class': 10,
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
@@ -89,8 +84,9 @@ class Esemble:
         if self.method == 2:
             params = {
                 'tree_method': 'gpu_hist',
-                'objective': 'reg:squarederror',
-                'eval_metric': 'mae',
+                'objective': 'multi:softprob',
+                'eval_metric': 'mlogloss',
+                'num_class': 10,
                 'booster': 'gbtree',
                 'eta': 0.01,
                 'early_stopping_rounds': 10,
@@ -103,8 +99,8 @@ class Esemble:
         if self.method == 3:
             params = {
                 'task_type': 'GPU',
-                'objective': 'RMSE',
-                'eval_metric': 'MAE',
+                'objective': 'MultiClass',
+                'eval_metric': 'MultiClass',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
 
@@ -118,63 +114,65 @@ class Esemble:
     def save_best_model(self, best_params):
         if self.method == 0:
             best_params.update({
-                'criterion': 'friedman_mse',
+                'criterion': 'entropy',
             })
 
-            bst = DecisionTreeRegressor(**best_params)
+            bst = DecisionTreeClassifier(**best_params)
             bst.fit(self.X_train, self.y_train)
             joblib.dump(bst, f'File/DT/dt_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/DT/dt_{self.name}_params.txt', best_params)
-            print(f'{mean_absolute_percentage_error(self.y_test, bst.predict(self.X_test)):.4f}')
+            print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
             print("Model saved!")
 
         if self.method == 1:
             best_params.update({
                 'device': 'gpu',
-                'objective': 'regression',
-                'metric': 'mae',
+                'objective': 'multiclass',
+                'metric': 'multi_logloss',
+                'num_class': 10,
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
 
             })
 
-            bst = LGBMRegressor(**best_params)
+            bst = LGBMClassifier(**best_params)
             bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)])
             joblib.dump(bst, f'File/LGBM/lgb_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/LGBM/lgb_{self.name}_params.txt', best_params)
-            print(f'{mean_absolute_percentage_error(self.y_test, bst.predict(self.X_test)):.4f}')
+            print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
             print("Model saved!")
 
         if self.method == 2:
             best_params.update({
                 'tree_method': 'gpu_hist',
-                'objective': 'reg:squarederror',
-                'eval_metric': 'mae',
+                'objective': 'multi:softprob',
+                'eval_metric': 'mlogloss',
+                'num_class': 10,
                 'booster': 'gbtree',
                 'eta': 0.01,
                 'early_stopping_rounds': 10,
             })
 
-            bst = XGBRegressor(**best_params)
+            bst = XGBClassifier(**best_params)
             bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
             joblib.dump(bst, f'File/XGB/xgb_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/XGB/xgb_{self.name}_params.txt', best_params)
-            print(f'{mean_absolute_percentage_error(self.y_test, bst.predict(self.X_test)):.4f}')
+            print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
             print("Model saved!")
 
         if self.method == 3:
             best_params.update({
                 'task_type': 'GPU',
-                'objective': 'RMSE',
-                'eval_metric': 'MAE',
+                'objective': 'MultiClass',
+                'eval_metric': 'MultiClass',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
             })
 
-            bst = CatBoostRegressor(**best_params)
+            bst = CatBoostClassifier(**best_params)
             bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
             joblib.dump(bst, f'File/CAT/cat_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/CAT/cat_{self.name}_params.txt', best_params)
-            print(f'{mean_absolute_percentage_error(self.y_test, bst.predict(self.X_test)):.4f}')
+            print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
             print("Model saved!")

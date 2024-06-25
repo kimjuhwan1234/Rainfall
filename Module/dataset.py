@@ -1,3 +1,4 @@
+import pandas as pd
 from torch.utils.data import Dataset
 
 import torch
@@ -6,7 +7,7 @@ import torch
 class CustomDataset(Dataset):
     def __init__(self, X, y):
         self.X = X
-        self.y = y
+        self.y = pd.DataFrame(y)
 
     def __len__(self):
         return len(self.X)

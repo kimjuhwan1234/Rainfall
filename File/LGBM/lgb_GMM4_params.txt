@@ -1,8 +1,8 @@
-max_depth: 15
-reg_lambda: 6.603668167316333
+max_depth: 20
+reg_lambda: 8.408551707288183
 device: gpu
 objective: regression
-metric: mape
+metric: mae
 boosting_type: gbdt
 learning_rate: 0.01
 early_stopping_rounds: 10

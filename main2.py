@@ -4,6 +4,7 @@ import torch
 import pandas as pd
 from Module.run import Run
 from utils.parser import config
+from sklearn.model_selection import train_test_split
 from multiprocessing import set_start_method, Process
 
 
@@ -46,29 +47,20 @@ class Execution:
     #             p.join()
 
     def main(self):
-        STN_list = ['STN001', 'STN002', 'STN003', 'STN004', 'STN005', 'STN006', 'STN007', 'STN008', 'STN009', 'STN010',
-                    'STN011', 'STN012', 'STN013', 'STN014', 'STN015', 'STN016', 'STN017', 'STN018', 'STN019', 'STN020']
-        directory = 'Database/train/'
-        files = sorted(filename for filename in os.listdir(directory) if filename.endswith('.csv'))
+        df = pd.read_csv(os.path.join(self.directory, 'meta_train.csv'), index_col=0)
 
-        X_val = pd.read_csv('Database/val/X_val_norm.csv', index_col=0)
-        y_val = pd.read_csv('Database/val/y_val.csv', index_col=0)
+        X_train, X_val, y_train, y_val = train_test_split(df.iloc[:, :-1], df.iloc[:, -1], shuffle=True, test_size=0.2)
+        weight_path = f'Weight/meta_model.pth'
 
-        for i, STN in enumerate(STN_list):
-            file_list = [sentence for sentence in files if STN in sentence]
-            X_train = pd.read_csv(os.path.join(directory, file_list[0]), index_col=0)
-            y_train = pd.read_csv(os.path.join(directory, file_list[1]), index_col=0)
-            weight_path = f'Weight/{STN}.pth'
-
-            print('')
-            print(f'{STN} will be started...')
-            time.sleep(2)
-            trainer = Run(X_train, y_train, X_val, y_val, weight_path, self.config)
-            trainer.load_data()
-            trainer.run_model()
-            trainer.check_validation()
+        print('')
+        print(f'{weight_path} will be started...')
+        time.sleep(2)
+        trainer = Run(X_train, y_train, X_val, y_val, weight_path, self.config)
+        trainer.load_data()
+        trainer.run_model()
+        trainer.check_validation()
 
 
 if __name__ == "__main__":
-    E = Execution('Database/total', None)
+    E = Execution('Database/', None)
     E.main()

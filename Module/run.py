@@ -83,7 +83,7 @@ class Run:
         plt.show()
 
         # plot accuracy progress
-        plt.title("Train-Val R2")
+        plt.title("Train-Val F1")
         plt.plot(range(1, early_stop_epoch + 1), metric_hist_numpy.iloc[:, 0], label="train")
         plt.plot(range(1, early_stop_epoch + 1), metric_hist_numpy.iloc[:, 1], label="val")
         plt.ylabel("R2")
@@ -91,4 +91,4 @@ class Run:
         plt.legend()
         plt.show()
 
-        print('Finished checking loss and R2!')
+        print('Finished checking loss and F1!')
