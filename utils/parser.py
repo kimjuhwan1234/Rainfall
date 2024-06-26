@@ -2,9 +2,9 @@ import argparse
 from Module.model import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input_size", type=int, default=45, help="input_size")
-parser.add_argument("--hidden_size", type=int, default=512, help="hidden_size")
-parser.add_argument("--output_size", type=int, default=10, help="output_size")
+parser.add_argument("--input_dim", type=int, default=57, help="input_size")
+parser.add_argument("--output_dim", type=int, default=10, help="hidden_size")
+parser.add_argument("--z_dim", type=int, default=16, help="hidden_size")
 parser.add_argument("--num_layers", type=int, default=2, help="num_layers")
 parser.add_argument("--bidirectional", type=bool, default=False, help="bidirectional")
 
@@ -23,7 +23,7 @@ parser.add_argument("--backbone_weight_path", type=str, default='Weight/meta_mod
 opt_train = parser.parse_args()
 print(opt_train)
 # ---------------------------------------------------------------------------------------------------------------------#
-backbone = MLP(input_size=opt_model.input_size, hidden_size=opt_model.hidden_size, output_size=opt_model.output_size)
+backbone = VAE(opt_model.input_dim, opt_model.output_dim, opt_model.z_dim)
 # backbone.load_state_dict(torch.load(opt_train.backbone_weight_path))
 # ---------------------------------------------------------------------------------------------------------------------#
 config = dict()

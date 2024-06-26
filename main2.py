@@ -47,10 +47,12 @@ class Execution:
     #             p.join()
 
     def main(self):
-        df = pd.read_csv(os.path.join(self.directory, 'meta_train.csv'), index_col=0)
+        X_train = pd.read_csv(os.path.join(self.directory, 'total_X_train_norm.csv'), index_col=0)
+        y_train = pd.read_csv(os.path.join(self.directory, 'total_y_train.csv'), index_col=0)
+        X_val = pd.read_csv(os.path.join(self.directory, 'total_X_val_norm.csv'), index_col=0)
+        y_val = pd.read_csv(os.path.join(self.directory, 'total_y_val.csv'), index_col=0)
 
-        X_train, X_val, y_train, y_val = train_test_split(df.iloc[:, :-1], df.iloc[:, -1], shuffle=True, test_size=0.2)
-        weight_path = f'Weight/meta_model.pth'
+        weight_path = f'Weight/VAE.pth'
 
         print('')
         print(f'{weight_path} will be started...')
@@ -62,5 +64,5 @@ class Execution:
 
 
 if __name__ == "__main__":
-    E = Execution('Database/', None)
+    E = Execution('Database/total', None)
     E.main()

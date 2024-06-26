@@ -2,9 +2,6 @@ import sys
 import time
 import torch
 import pandas as pd
-from sklearn.metrics import f1_score
-import torch.nn.functional as F
-
 
 class Train_Module:
     def __init__(self, device):
@@ -29,22 +26,17 @@ class Train_Module:
         model.eval()
         with torch.no_grad():
             i = 0
-            for data, gt in dataset_dl:
+            for data in dataset_dl:
                 i += 1
                 if not initial:
                     self.plot_bar('Val', i, len_data)
 
                 data = data.to(self.device)
-                gt = gt.to(self.device)
 
-                output, loss = model(data, gt)
-
-                probabilities = F.softmax(output, 1)
-                _, output = torch.max(probabilities, 1)
+                x_recon, loss, target_loss = model(data)
 
                 total_loss += loss
-                accuracy = f1_score(gt.cpu().numpy(), output.cpu().detach().numpy(), average='weighted')
-                total_accuracy += accuracy
+                total_accuracy += target_loss
 
             total_loss = total_loss / len_data
             total_accuracy = total_accuracy / len_data
@@ -58,24 +50,19 @@ class Train_Module:
 
         model.train()
         i = 0
-        for data, gt in dataset_dl:
+        for data in dataset_dl:
             i += 1
             self.plot_bar('Train', i, len_data)
 
             data = data.to(self.device)
-            gt = gt.to(self.device)
 
             opt.zero_grad()
-            output, loss = model(data, gt)
+            x_recon, loss, target_loss = model(data)
             loss.backward()
             opt.step()
 
-            probabilities = F.softmax(output, 1)
-            _, output = torch.max(probabilities, 1)
-
             total_loss += loss
-            accuracy = f1_score(gt.cpu().numpy(), output.cpu().detach().numpy(), average='weighted')
-            total_accuracy += accuracy
+            total_accuracy += target_loss
 
         total_loss = total_loss / len_data
         total_accuracy = total_accuracy / len_data
