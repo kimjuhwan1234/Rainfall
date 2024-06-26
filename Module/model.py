@@ -9,7 +9,7 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
 
         self.lstm = nn.GRU(input_size, 64, num_layers=num_layers,
-                                bidirectional=bidirectional, batch_first=True).double()
+                           bidirectional=bidirectional, batch_first=True).double()
 
         self.MLP = nn.Sequential(
             nn.Linear(128, 256),
