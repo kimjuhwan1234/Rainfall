@@ -94,7 +94,7 @@ class VAE(nn.Module):
             con_x_re = self.decoder(con_z, 0)
             one_x_re, class_x_re = self.decoder(dis_z, 1)
             dis_x = (one_x_re > 0.5).float()
-            class_x = torch.argmax(class_x_re, dim=1).reshape(-1, 1) + 1
+            class_x = torch.argmax(class_x_re, dim=1).reshape(-1, 1)
             x_recon = torch.cat((con_x_re, dis_x, class_x), dim=1)
 
             dis_x_re = torch.cat((one_x_re, class_x_re), dim=1)
@@ -111,6 +111,6 @@ class VAE(nn.Module):
             con_x_re = self.decoder(con_z, 0)
             one_x_re, class_x_re = self.decoder(dis_z, 1)
             dis_x = (one_x_re > 0.5).float()
-            class_x = torch.argmax(class_x_re, dim=1).reshape(-1, 1) + 1
+            class_x = torch.argmax(class_x_re, dim=1).reshape(-1, 1)
             x_recon = torch.cat((con_x_re, dis_x, class_x), dim=1)
             return x_recon
