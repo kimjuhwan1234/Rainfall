@@ -25,7 +25,7 @@ if __name__ == "__main__":
             # {DT=0, lightGBM=1, XGBoost=2, CatBoost=3}
             E = Esemble(i, X_train, X_val, y_train, y_val, 1000, code)
 
-            study = optuna.create_study(direction='maximize')
+            study = optuna.create_study(direction='maximize', sampler=optuna.samplers.RandomSampler())
             study.optimize(E.objective, n_trials=100)
 
             print('Number of finished trials:', len(study.trials))

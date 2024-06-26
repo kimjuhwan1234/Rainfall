@@ -60,6 +60,7 @@ class Run:
 
         TM = Train_Module(self.device)
         self.model, self.loss_hist, self.metric_hist = TM.train_and_eval(self.model, parameters)
+        torch.save(self.model.backbone.state_dict(), 'Weight/MLP.pth')
 
         print('Finished training model!')
 
