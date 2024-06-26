@@ -95,20 +95,22 @@ class Decoder(nn.Module):
 
 
 class VAE(nn.Module):
-    def __init__(self, z_dim, model):
+    def __init__(self, z_dim, model, num=None):
         super(VAE, self).__init__()
         self.encoder = Encoder(z_dim)
         self.decoder = Decoder(z_dim)
-        self.softmax = nn.Softmax(dim=1).double()
         self.model = model
+        self.z_dim = z_dim
+        self.num = num
+        self.softmax = nn.Softmax(dim=1).double()
 
     def reparameterize(self, mu, logvar):
         std = torch.exp(0.5 * logvar)
         eps = torch.randn_like(std)
         return mu + eps * std
 
-    def forward(self, x, z_dim=None):
-        if z_dim == None:
+    def forward(self, x=None):
+        if x != None:
             con_mu, con_logvar, dis_mu, dis_logvar = self.encoder(x)
             con_z = self.reparameterize(con_mu, con_logvar)
             dis_z = self.reparameterize(dis_mu, dis_logvar)
@@ -123,13 +125,13 @@ class VAE(nn.Module):
 
             loss1 = loss_function(con_x_re, x, con_mu, con_logvar, 0)
             loss2 = loss_function(dis_x_re, x, dis_mu, dis_logvar, 1)
-            total_loss = (loss1 + loss2) * torch.log(target_loss)
+            total_loss = (loss1 + loss2) + target_loss * 100
 
             return x_recon, total_loss, target_loss
 
-        if z_dim != None:
-            con_z = torch.randn(10, z_dim).to('cuda')
-            dis_z = torch.randn(10, z_dim).to('cuda')
+        if x == None:
+            con_z = torch.randn(self.num, self.z_dim).double()
+            dis_z = torch.randn(self.num, self.z_dim).double()
 
             con_x_re = self.decoder(con_z, 0)
             dis_x_re = self.decoder(dis_z, 1)

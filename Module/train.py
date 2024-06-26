@@ -109,6 +109,7 @@ class Train_Module:
                 counter = 0
                 best_loss = val_loss
                 torch.save(model.state_dict(), weight_path)
+                torch.save(model.model.state_dict(), 'Weight/MLP.pth')
                 print('Saved model Weight!')
             else:
                 counter += 1
