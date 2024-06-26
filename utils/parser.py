@@ -22,9 +22,7 @@ parser.add_argument("--num_workers", type=int, default=4, help="num_workers")
 opt_train = parser.parse_args()
 print(opt_train)
 # ---------------------------------------------------------------------------------------------------------------------#
-backbone = MLP(opt_model.input_dim, opt_model.output_dim, opt_model.num_layers, opt_model.bidirectional)
-# backbone.load_state_dict(torch.load('Weight/MLP.pth'))
-model = VAE(opt_model.z_dim, backbone)
+model = VAE(opt_model.z_dim)
 # model.load_state_dict(torch.load('Weight/VAE.pth'))
 # ---------------------------------------------------------------------------------------------------------------------#
 config = dict()
