@@ -96,6 +96,6 @@ class VAE(nn.Module):
         x_recon = torch.cat((x_recon_input, x_recon_target), dim=1)
         x_gt = x[:, -1]
         target_loss = nn.functional.cross_entropy(x_recon_input.float(), x_gt.long())
-        total_loss = loss1 + loss2 + target_loss
+        total_loss = (loss1 + loss2) * torch.log_(target_loss)
 
         return x_recon, total_loss, target_loss

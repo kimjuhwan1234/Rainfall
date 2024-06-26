@@ -117,7 +117,7 @@ class Train_Module:
                     break
 
             print(f'train loss: {train_loss:.10f}, val loss: {val_loss:.10f}')
-            print(f'F1: {val_accuracy:.4f}, time: {(time.time() - start_time) / 60:.2f}')
+            print(f'Entropy: {val_accuracy:.4f}, time: {(time.time() - start_time) / 60:.2f}')
             print(' ')
 
         return model, loss_history, accuracy_history
