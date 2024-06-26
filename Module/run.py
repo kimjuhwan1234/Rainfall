@@ -65,7 +65,7 @@ class Run:
 
     def check_validation(self):
         print(' ')
-        print('Check loss and RMSE...')
+        print('Check loss and Entropy...')
 
         loss_hist_numpy = self.loss_hist.map(
             lambda x: x.cpu().detach().numpy() if isinstance(x, torch.Tensor) else x)
@@ -83,12 +83,12 @@ class Run:
         plt.show()
 
         # plot accuracy progress
-        plt.title("Train-Val F1")
+        plt.title("Train-Val Entropy")
         plt.plot(range(1, early_stop_epoch + 1), metric_hist_numpy.iloc[:, 0], label="train")
         plt.plot(range(1, early_stop_epoch + 1), metric_hist_numpy.iloc[:, 1], label="val")
-        plt.ylabel("R2")
+        plt.ylabel("Entropy")
         plt.xlabel("Training Epochs")
         plt.legend()
         plt.show()
 
-        print('Finished checking loss and F1!')
+        print('Finished checking loss and Entropy!')

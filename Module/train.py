@@ -3,6 +3,7 @@ import time
 import torch
 import pandas as pd
 
+
 class Train_Module:
     def __init__(self, device):
         self.device = device

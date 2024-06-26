@@ -92,7 +92,7 @@ class VAE(nn.Module):
         dis_x_re = (dis_x_re > 0.5).float()
         x_recon_input = torch.cat((con_x_re, dis_x_re), dim=1)
         x_recon_target_prob = self.softmax(self.fc(x_recon_input))
-        x_recon_target = torch.argmax(x_recon_target_prob, dim=1).reshape(-1,1)
+        x_recon_target = torch.argmax(x_recon_target_prob, dim=1).reshape(-1, 1)
         x_recon = torch.cat((x_recon_input, x_recon_target), dim=1)
         x_gt = x[:, -1]
         target_loss = nn.functional.cross_entropy(x_recon_input.float(), x_gt.long())
