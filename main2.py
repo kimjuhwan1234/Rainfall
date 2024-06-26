@@ -4,7 +4,6 @@ import torch
 import pandas as pd
 from Module.run import Run
 from utils.parser import config
-from sklearn.model_selection import train_test_split
 from multiprocessing import set_start_method, Process
 
 
@@ -49,8 +48,6 @@ class Execution:
     def main(self):
         train = pd.read_csv(os.path.join(self.directory, 'total_train.csv'), index_col=0)
         val = pd.read_csv(os.path.join(self.directory, 'total_val.csv'), index_col=0)
-
-
         weight_path = f'Weight/VAE.pth'
 
         print('')
