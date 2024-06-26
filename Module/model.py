@@ -99,10 +99,9 @@ class VAE(nn.Module):
             dis_x_re = torch.cat((one_x_re, self.sigmoid(h_class)), dim=1)
             loss1 = loss_function(con_x_re, x, con_mu, con_logvar, 0)
             loss2 = loss_function(dis_x_re, x, dis_mu, dis_logvar, 1)
-            total_loss = (loss1 + loss2)
-
             gt = torch.argmax(self.softmax(x[:, -9:]), dim=1)
             target_loss = F.cross_entropy(h_class, gt)
+            total_loss = (loss1 + loss2) + target_loss * 100
 
             return x_recon, total_loss, target_loss
 
