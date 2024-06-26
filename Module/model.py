@@ -5,23 +5,27 @@ import torch.nn.functional as F
 
 
 class MLP(nn.Module):
-    def __init__(self, input_size, output_size):
+    def __init__(self, input_size, output_size, num_layers, bidirectional):
         super(MLP, self).__init__()
 
+        self.lstm = nn.GRU(input_size, 64, num_layers=num_layers,
+                                bidirectional=bidirectional, batch_first=True).double()
+
         self.MLP = nn.Sequential(
-            nn.Linear(input_size, 128),
-            nn.ReLU(),
             nn.Linear(128, 256),
             nn.ReLU(),
-            nn.Dropout(0.05),
             nn.Linear(256, 128),
             nn.ReLU(),
-            nn.Linear(128, output_size),
+            nn.Dropout(0.01),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, output_size),
         ).double()
 
         self.softmax = nn.Softmax(dim=1).double()
 
     def forward(self, data, gt=None):
+        data, _ = self.lstm(data)
         x_recon_target_latent = self.MLP(data)
         x_recon_target_prob = self.softmax(x_recon_target_latent)
         output = torch.argmax(x_recon_target_prob, dim=1).reshape(-1, 1)

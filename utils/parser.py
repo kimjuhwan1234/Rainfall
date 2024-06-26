@@ -6,7 +6,7 @@ parser.add_argument("--input_dim", type=int, default=57, help="input_size")
 parser.add_argument("--output_dim", type=int, default=10, help="hidden_size")
 parser.add_argument("--z_dim", type=int, default=32, help="hidden_size")
 parser.add_argument("--num_layers", type=int, default=2, help="num_layers")
-parser.add_argument("--bidirectional", type=bool, default=False, help="bidirectional")
+parser.add_argument("--bidirectional", type=bool, default=True, help="bidirectional")
 
 opt_model = parser.parse_args()
 print(opt_model)
@@ -22,10 +22,10 @@ parser.add_argument("--num_workers", type=int, default=4, help="num_workers")
 opt_train = parser.parse_args()
 print(opt_train)
 # ---------------------------------------------------------------------------------------------------------------------#
-backbone = MLP(opt_model.input_dim, opt_model.output_dim)
-backbone.load_state_dict(torch.load('Weight/MLP.pth'))
+backbone = MLP(opt_model.input_dim, opt_model.output_dim, opt_model.num_layers, opt_model.bidirectional)
+# backbone.load_state_dict(torch.load('Weight/MLP.pth'))
 model = VAE(opt_model.z_dim, backbone)
-model.load_state_dict(torch.load('Weight/VAE.pth'))
+# model.load_state_dict(torch.load('Weight/VAE.pth'))
 # ---------------------------------------------------------------------------------------------------------------------#
 config = dict()
 config['model'] = opt_model
