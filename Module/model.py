@@ -24,9 +24,9 @@ class Encoder(nn.Module):
         self.fc_con_mu = nn.Linear(64, z_dim).double()
         self.fc_con_logvar = nn.Linear(64, z_dim).double()
 
-        self.fc_one = nn.Linear(54, 64).double()
-        self.fc_one_mu = nn.Linear(64, z_dim).double()
-        self.fc_one_logvar = nn.Linear(64, z_dim).double()
+        self.fc_one = nn.Linear(54, 128).double()
+        self.fc_one_mu = nn.Linear(128, z_dim).double()
+        self.fc_one_logvar = nn.Linear(128, z_dim).double()
 
     def forward(self, x):
         con_x = x[:, :12]
@@ -48,11 +48,10 @@ class Decoder(nn.Module):
         self.fc1_con = nn.Linear(z_dim, 64).double()
         self.fc2_con = nn.Linear(64, 12).double()
 
-        self.fc1_dis = nn.Linear(z_dim, 64).double()
-        self.fc2_dis = nn.Linear(64, 54).double()
+        self.fc1_dis = nn.Linear(z_dim, 128).double()
+        self.fc2_dis = nn.Linear(128, 54).double()
 
         self.sigmoid = nn.Sigmoid().double()
-        self.softmax = nn.Softmax(dim=1).double()
 
     def forward(self, x, method):
         if method == 0:
@@ -67,8 +66,7 @@ class Decoder(nn.Module):
             h_class = h[:, -9:]
 
             x_recon_one = self.sigmoid(h_one)
-            x_recon_class = self.softmax(h_class)
-            return x_recon_one, x_recon_class
+            return x_recon_one, h_class
 
 
 class VAE(nn.Module):
@@ -78,6 +76,7 @@ class VAE(nn.Module):
         self.decoder = Decoder(z_dim)
         self.z_dim = z_dim
         self.num = num
+        self.sigmoid = nn.Sigmoid().double()
         self.softmax = nn.Softmax(dim=1).double()
 
     def reparameterize(self, mu, logvar):
@@ -92,25 +91,28 @@ class VAE(nn.Module):
             dis_z = self.reparameterize(dis_mu, dis_logvar)
 
             con_x_re = self.decoder(con_z, 0)
-            one_x_re, class_x_re = self.decoder(dis_z, 1)
+            one_x_re, h_class = self.decoder(dis_z, 1)
             dis_x = (one_x_re > 0.5).float()
-            class_x = torch.argmax(class_x_re, dim=1).reshape(-1, 1)
+            class_x = torch.argmax(self.softmax(h_class), dim=1).reshape(-1, 1)
             x_recon = torch.cat((con_x_re, dis_x, class_x), dim=1)
 
-            dis_x_re = torch.cat((one_x_re, class_x_re), dim=1)
+            dis_x_re = torch.cat((one_x_re, self.sigmoid(h_class)), dim=1)
             loss1 = loss_function(con_x_re, x, con_mu, con_logvar, 0)
             loss2 = loss_function(dis_x_re, x, dis_mu, dis_logvar, 1)
             total_loss = (loss1 + loss2)
 
-            return x_recon, total_loss, loss2
+            gt = torch.argmax(self.softmax(x[:, -9:]), dim=1)
+            target_loss = F.cross_entropy(h_class, gt)
+
+            return x_recon, total_loss, target_loss
 
         if x == None:
             con_z = torch.randn(self.num, self.z_dim).double()
             dis_z = torch.randn(self.num, self.z_dim).double()
 
             con_x_re = self.decoder(con_z, 0)
-            one_x_re, class_x_re = self.decoder(dis_z, 1)
+            one_x_re, h_class = self.decoder(dis_z, 1)
             dis_x = (one_x_re > 0.5).float()
-            class_x = torch.argmax(class_x_re, dim=1).reshape(-1, 1)
+            class_x = torch.argmax(self.softmax(h_class), dim=1).reshape(-1, 1)
             x_recon = torch.cat((con_x_re, dis_x, class_x), dim=1)
             return x_recon
