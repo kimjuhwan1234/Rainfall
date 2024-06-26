@@ -4,8 +4,8 @@ from torch.utils.data import Dataset
 
 
 class CustomDataset(Dataset):
-    def __init__(self, X, y):
-        self.data = pd.concat([X, y], axis=1)
+    def __init__(self, X):
+        self.data = X
 
     def __len__(self):
         return len(self.data)

@@ -7,7 +7,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 class Run:
-    def __init__(self, X_train, y_train, X_val, y_val, weight_path, config):
+    def __init__(self, train, val, weight_path, config):
         self.config = config
         self.lr = self.config['train'].lr
         self.epochs = self.config['train'].epochs
@@ -17,17 +17,15 @@ class Run:
 
         self.model = self.config['structure']
 
-        self.X_train = X_train
-        self.y_train = y_train
-        self.X_val = X_val
-        self.y_val = y_val
+        self.train = train
+        self.val = val
         self.weight_path = weight_path
 
     def load_data(self):
         print(' ')
         print('Loading data...')
-        train_dataset = CustomDataset(self.X_train, self.y_train)
-        val_dataset = CustomDataset(self.X_val, self.y_val)
+        train_dataset = CustomDataset(self.train)
+        val_dataset = CustomDataset(self.val)
 
         dataloaders = {
             'train': DataLoader(train_dataset, batch_size=self.batch_size, shuffle=False),

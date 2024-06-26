@@ -47,17 +47,16 @@ class Execution:
     #             p.join()
 
     def main(self):
-        X_train = pd.read_csv(os.path.join(self.directory, 'total_X_train_norm.csv'), index_col=0)
-        y_train = pd.read_csv(os.path.join(self.directory, 'total_y_train.csv'), index_col=0)
-        X_val = pd.read_csv(os.path.join(self.directory, 'total_X_val_norm.csv'), index_col=0)
-        y_val = pd.read_csv(os.path.join(self.directory, 'total_y_val.csv'), index_col=0)
+        train = pd.read_csv(os.path.join(self.directory, 'total_train.csv'), index_col=0)
+        val = pd.read_csv(os.path.join(self.directory, 'total_val.csv'), index_col=0)
+
 
         weight_path = f'Weight/VAE.pth'
 
         print('')
         print(f'{weight_path} will be started...')
         time.sleep(2)
-        trainer = Run(X_train, y_train, X_val, y_val, weight_path, self.config)
+        trainer = Run(train, val, weight_path, self.config)
         trainer.load_data()
         trainer.run_model()
         trainer.check_validation()
