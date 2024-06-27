@@ -28,9 +28,10 @@ class Esemble:
         bst = DecisionTreeClassifier(**params)
         bst.fit(self.X_train, self.y_train)
         y_pred = bst.predict(self.X_test)
+
         score = precision_score(self.y_test, y_pred, average='weighted')
         print(f'{score:.4f}')
-        return precision_score
+        return score
 
     def lightGBM(self, params):
         bst = LGBMClassifier(**params, n_estimators=self.num_rounds)
@@ -38,28 +39,30 @@ class Esemble:
             lgb.early_stopping(stopping_rounds=10, verbose=True),
             lgb.log_evaluation(100)
         ]
-
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], callbacks=callbacks)
         y_pred = bst.predict(self.X_test)
+
         score = precision_score(self.y_test, y_pred, average='weighted')
         print(f'{score:.4f}')
-        return precision_score
+        return score
 
     def XGBoost(self, params):
         bst = XGBClassifier(**params, n_estimators=self.num_rounds)
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
         y_pred = bst.predict(self.X_test)
+
         score = precision_score(self.y_test, y_pred, average='weighted')
         print(f'{score:.4f}')
-        return precision_score
+        return score
 
     def CatBoost(self, params):
         bst = CatBoostClassifier(**params, iterations=self.num_rounds)
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
         y_pred = bst.predict(self.X_test)
+
         score = precision_score(self.y_test, y_pred, average='weighted')
         print(f'{score:.4f}')
-        return precision_score
+        return score
 
     def objective(self, trial):
         if self.method == 0:
@@ -80,7 +83,6 @@ class Esemble:
                 'learning_rate': 0.01,
 
                 'colsample_bytree': trial.suggest_float('colsample_bytree', 0.3, 1.0),
-
             }
             accuracy = self.lightGBM(params)
 
