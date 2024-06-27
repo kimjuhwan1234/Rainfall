@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from Module.train import *
-from torch.optim import Adam
+from torch.optim import Adam, AdamW
 from torch.utils.data import DataLoader
 from Module.dataset import CustomDataset
 from torch.optim.lr_scheduler import ReduceLROnPlateau
@@ -16,6 +16,7 @@ class Run:
         self.device = self.config['train'].device
 
         self.model = self.config['structure']
+        self.model2 = self.config['structure2']
 
         self.train = train
         self.val = val
@@ -41,23 +42,30 @@ class Run:
         print('Training model...')
 
         self.model.to(self.device)
-        opt = Adam(self.model.parameters(), lr=self.lr)
-        lr_scheduler = ReduceLROnPlateau(opt, mode='min', factor=0.2, patience=self.patience)
+        self.model2.to(self.device)
+        opt_VAE = Adam(self.model.parameters(), lr=self.lr)
+        lr_VAE = ReduceLROnPlateau(opt_VAE, mode='min', factor=0.2, patience=self.patience)
+        opt_GAN = AdamW(self.model2.parameters(), lr=self.lr)
 
         parameters = {
-            'num_epochs': self.epochs,
+            'model': self.model,
+            'device': self.device,
             'weight_path': self.weight_path,
+            'num_epochs': self.epochs,
+            'patience': self.patience,
 
             'train_dl': self.dataloaders['train'],
             'val_dl': self.dataloaders['val'],
 
-            'patience': self.patience,
-            'optimizer': opt,
-            'lr_scheduler': lr_scheduler,
+            'optimizer': opt_VAE,
+            'lr_scheduler': lr_VAE,
+
+            'opt_GAN': opt_GAN,
+            'GAN': self.model2,
         }
 
-        TM = Train_Module(self.device)
-        self.model, self.loss_hist, self.metric_hist = TM.train_and_eval(self.model, parameters)
+        TM = Train_Module(parameters)
+        self.loss_hist, self.metric_hist = TM.train_and_eval()
 
         print('Finished training model!')
 

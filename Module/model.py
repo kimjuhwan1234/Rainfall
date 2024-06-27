@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -20,9 +19,9 @@ def loss_function(x_recon, x, mu, logvar, method: int):
 class Encoder(nn.Module):
     def __init__(self, z_dim):
         super(Encoder, self).__init__()
-        self.fc_con = nn.Linear(12, 64).double()
-        self.fc_con_mu = nn.Linear(64, z_dim).double()
-        self.fc_con_logvar = nn.Linear(64, z_dim).double()
+        self.fc_con = nn.Linear(12, 128).double()
+        self.fc_con_mu = nn.Linear(128, z_dim).double()
+        self.fc_con_logvar = nn.Linear(128, z_dim).double()
 
         self.fc_one = nn.Linear(54, 128).double()
         self.fc_one_mu = nn.Linear(128, z_dim).double()
@@ -31,13 +30,13 @@ class Encoder(nn.Module):
     def forward(self, x):
         con_x = x[:, :12]
         con_h = self.fc_con(con_x)
-        con_mu = self.fc_con_mu(F.leaky_relu(con_h))
-        con_logvar = self.fc_con_logvar(F.leaky_relu(con_h))
+        con_mu = self.fc_con_mu(F.leaky_relu(con_h,0.2))
+        con_logvar = self.fc_con_logvar(F.leaky_relu(con_h, 0.2))
 
         dis_x = x[:, 12:]
         dis_h = self.fc_one(dis_x)
-        dis_mu = self.fc_one_mu(F.leaky_relu(dis_h))
-        dis_logvar = self.fc_one_logvar(F.leaky_relu(dis_h))
+        dis_mu = self.fc_one_mu(F.leaky_relu(dis_h, 0.2))
+        dis_logvar = self.fc_one_logvar(F.leaky_relu(dis_h, 0.2))
 
         return con_mu, con_logvar, dis_mu, dis_logvar
 
@@ -45,8 +44,8 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     def __init__(self, z_dim):
         super(Decoder, self).__init__()
-        self.fc1_con = nn.Linear(z_dim, 64).double()
-        self.fc2_con = nn.Linear(64, 12).double()
+        self.fc1_con = nn.Linear(z_dim, 128).double()
+        self.fc2_con = nn.Linear(128, 12).double()
 
         self.fc1_dis = nn.Linear(z_dim, 128).double()
         self.fc2_dis = nn.Linear(128, 54).double()
@@ -56,12 +55,12 @@ class Decoder(nn.Module):
     def forward(self, x, method):
         if method == 0:
             h = self.fc1_con(x)
-            x_recon = self.fc2_con(F.leaky_relu(h))
+            x_recon = self.fc2_con(F.leaky_relu(h, 0.2))
             return x_recon
 
         if method == 1:
             h = self.fc1_dis(x)
-            h = self.fc2_dis(F.leaky_relu(h))
+            h = self.fc2_dis(F.leaky_relu(h, 0.2))
             h_one = h[:, :-9]
             h_class = h[:, -9:]
 
