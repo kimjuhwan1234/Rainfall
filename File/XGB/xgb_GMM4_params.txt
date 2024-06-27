@@ -1,8 +1,0 @@
-max_depth: 5
-reg_lambda: 6.239943355902317
-tree_method: gpu_hist
-objective: reg:squarederror
-eval_metric: mae
-booster: gbtree
-eta: 0.01
-early_stopping_rounds: 10

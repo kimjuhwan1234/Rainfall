@@ -1,8 +1,0 @@
-max_depth: 13
-reg_lambda: 0.4369195097233056
-device: gpu
-objective: regression
-metric: mae
-boosting_type: gbdt
-learning_rate: 0.01
-early_stopping_rounds: 10

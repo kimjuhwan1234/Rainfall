@@ -1,3 +1,0 @@
-max_features: 0.3493626101714767
-max_depth: 182
-criterion: friedman_mse
