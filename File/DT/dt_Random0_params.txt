@@ -1,3 +1,0 @@
-max_features: 0.38825216381475014
-max_depth: 190
-criterion: entropy
