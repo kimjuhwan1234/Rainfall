@@ -1,0 +1,5 @@
+task_type: GPU
+objective: MultiClass
+eval_metric: MultiClass
+learning_rate: 0.01
+early_stopping_rounds: 10

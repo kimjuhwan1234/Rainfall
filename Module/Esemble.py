@@ -68,8 +68,6 @@ class Esemble:
         if self.method == 0:
             params = {
                 'criterion': 'entropy',
-
-                'max_features': trial.suggest_float('max_features', 0.3, 1.0),
             }
             accuracy = self.DecisionTree(params)
 
@@ -81,8 +79,6 @@ class Esemble:
                 'num_class': 10,
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
-
-                'colsample_bytree': trial.suggest_float('colsample_bytree', 0.3, 1.0),
             }
             accuracy = self.lightGBM(params)
 
@@ -95,8 +91,6 @@ class Esemble:
                 'booster': 'gbtree',
                 'eta': 0.01,
                 'early_stopping_rounds': 10,
-
-                'colsample_bytree': trial.suggest_float('colsample_bytree', 0.3, 1.0),
             }
             accuracy = self.XGBoost(params)
 
@@ -107,8 +101,6 @@ class Esemble:
                 'eval_metric': 'MultiClass',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
-
-                'rsm': trial.suggest_float('rsm', 0.3, 1.0),
             }
             accuracy = self.CatBoost(params)
 

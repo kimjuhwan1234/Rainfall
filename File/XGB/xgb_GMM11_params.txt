@@ -1,0 +1,7 @@
+tree_method: gpu_hist
+objective: multi:softprob
+eval_metric: mlogloss
+num_class: 10
+booster: gbtree
+eta: 0.01
+early_stopping_rounds: 10

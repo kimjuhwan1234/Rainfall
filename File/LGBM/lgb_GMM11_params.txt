@@ -1,0 +1,8 @@
+colsample_bytree: 0.8255874077358185
+device: cpu
+objective: multiclass
+metric: multi_logloss
+num_class: 10
+boosting_type: gbdt
+learning_rate: 0.01
+early_stopping_round: 10

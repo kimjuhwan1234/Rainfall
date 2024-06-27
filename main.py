@@ -18,7 +18,7 @@ if __name__ == "__main__":
         X_train = pd.read_csv(os.path.join(directory, file_list[0]), index_col=0)
         y_train = pd.read_csv(os.path.join(directory, file_list[1]), index_col=0)
 
-        for i in range(1, 2):
+        for i in range(2, 4):
             # {DT=0, lightGBM=1, CatBoost=2, XGBoost=3}
             E = Esemble(i, X_train, X_val, y_train, y_val, 1000, code)
 

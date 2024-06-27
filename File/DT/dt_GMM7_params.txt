@@ -1,0 +1,2 @@
+max_features: 0.7477882709177054
+criterion: entropy
