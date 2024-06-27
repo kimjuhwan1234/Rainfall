@@ -66,8 +66,7 @@ class Esemble:
             params = {
                 'criterion': 'entropy',
 
-                'max_depth': trial.suggest_int('max_depth', 180, 190),
-                'max_features': trial.suggest_float('max_features', 0.3, 1),
+                'max_features': trial.suggest_uniform('max_features', 0.3, 1.0),
             }
             accuracy = self.DecisionTree(params)
 
@@ -80,7 +79,6 @@ class Esemble:
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
 
-                'max_depth': trial.suggest_int('max_depth', 5, 20),
                 'colsample_bytree': trial.suggest_uniform('colsample_bytree', 0.3, 1.0),
 
             }
@@ -96,7 +94,6 @@ class Esemble:
                 'eta': 0.01,
                 'early_stopping_rounds': 10,
 
-                'max_depth': trial.suggest_int('max_depth', 5, 20),
                 'colsample_bytree': trial.suggest_uniform('colsample_bytree', 0.3, 1.0),
             }
             accuracy = self.XGBoost(params)
@@ -109,7 +106,6 @@ class Esemble:
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
 
-                'depth': trial.suggest_int('depth', 5, 13),
                 'rsm': trial.suggest_uniform('rsm', 0.3, 1.0),
             }
             accuracy = self.CatBoost(params)

@@ -6,7 +6,7 @@ from Module.Esemble import *
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
-    GMM_list = [f'Random{i}' for i in range(5)]
+    GMM_list = ['GMM0', 'GMM2', 'GMM4', 'GMM6', 'GMM7', 'GMM8', 'GMM9', 'GMM10', 'GMM11', 'GMM14']
     directory = 'Database/train/'
     files = sorted(filename for filename in os.listdir(directory) if filename.endswith('.csv'))
 
@@ -26,7 +26,7 @@ if __name__ == "__main__":
                 direction='minimize',
                 pruner=optuna.pruners.MedianPruner(),
             )
-            study.optimize(E.objective, n_trials=2)
+            study.optimize(E.objective, n_trials=5)
 
             print('Number of finished trials:', len(study.trials))
             print('Best trial:', study.best_trial.params)
