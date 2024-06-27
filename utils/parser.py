@@ -3,7 +3,7 @@ from Module.model import *
 from Module.GAN import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input_dim", type=int, default=58, help="input_size")
+parser.add_argument("--input_dim", type=int, default=66, help="input_size")
 parser.add_argument("--output_dim", type=int, default=10, help="hidden_size")
 parser.add_argument("--z_dim", type=int, default=32, help="hidden_size")
 parser.add_argument("--num_layers", type=int, default=2, help="num_layers")

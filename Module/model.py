@@ -5,11 +5,11 @@ import torch.nn.functional as F
 
 def loss_function(x_recon, x, mu, logvar, method: int):
     if method == 0:
-        x = x[:, :12]
+        x = x[:, :20]
         recon_loss = nn.functional.mse_loss(x_recon, x, reduction='sum')
 
     if method == 1:
-        x = x[:, 12:]
+        x = x[:, 20:]
         recon_loss = nn.functional.binary_cross_entropy(x_recon, x, reduction='sum')
 
     kl_div = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
@@ -19,7 +19,7 @@ def loss_function(x_recon, x, mu, logvar, method: int):
 class Encoder(nn.Module):
     def __init__(self, z_dim):
         super(Encoder, self).__init__()
-        self.fc_con = nn.Linear(12, 128).double()
+        self.fc_con = nn.Linear(20, 128).double()
         self.fc_con_mu = nn.Linear(128, z_dim).double()
         self.fc_con_logvar = nn.Linear(128, z_dim).double()
 
@@ -28,12 +28,12 @@ class Encoder(nn.Module):
         self.fc_one_logvar = nn.Linear(128, z_dim).double()
 
     def forward(self, x):
-        con_x = x[:, :12]
+        con_x = x[:, :20]
         con_h = self.fc_con(con_x)
-        con_mu = self.fc_con_mu(F.leaky_relu(con_h,0.2))
+        con_mu = self.fc_con_mu(F.leaky_relu(con_h, 0.2))
         con_logvar = self.fc_con_logvar(F.leaky_relu(con_h, 0.2))
 
-        dis_x = x[:, 12:]
+        dis_x = x[:, 20:]
         dis_h = self.fc_one(dis_x)
         dis_mu = self.fc_one_mu(F.leaky_relu(dis_h, 0.2))
         dis_logvar = self.fc_one_logvar(F.leaky_relu(dis_h, 0.2))
@@ -45,7 +45,7 @@ class Decoder(nn.Module):
     def __init__(self, z_dim):
         super(Decoder, self).__init__()
         self.fc1_con = nn.Linear(z_dim, 128).double()
-        self.fc2_con = nn.Linear(128, 12).double()
+        self.fc2_con = nn.Linear(128, 20).double()
 
         self.fc1_dis = nn.Linear(z_dim, 128).double()
         self.fc2_dis = nn.Linear(128, 54).double()

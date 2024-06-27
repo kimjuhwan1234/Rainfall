@@ -81,7 +81,7 @@ class Esemble:
                 'learning_rate': 0.01,
 
                 'max_depth': trial.suggest_int('max_depth', 5, 20),
-                'feature_fraction': trial.suggest_uniform('feature_fraction', 0.3, 1.0),
+                'colsample_bytree': trial.suggest_uniform('colsample_bytree', 0.3, 1.0),
 
             }
             accuracy = self.lightGBM(params)
