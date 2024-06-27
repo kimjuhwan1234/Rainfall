@@ -49,7 +49,7 @@ class Train_Module:
 
                 x_recon, loss, target_loss = model(data)
 
-                total_loss += (loss + self.GAN(self.device, x_recon) * 100)
+                total_loss += (loss + self.GAN(self.device, x_recon) * 10)
                 total_accuracy += target_loss
 
             total_loss = total_loss / len_data
@@ -82,7 +82,7 @@ class Train_Module:
             loss.backward()
             opt.step()
 
-            total_loss += (loss + self.GAN(self.device, x_recon) * 100)
+            total_loss += (loss + self.GAN(self.device, x_recon) * 10)
             total_accuracy += target_loss
 
         total_loss = total_loss / len_data
