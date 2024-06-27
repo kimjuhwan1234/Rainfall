@@ -8,9 +8,9 @@ class GAN(nn.Module):
         self.discriminator = nn.Sequential(
             nn.Linear(input_dim, 128),
             nn.LeakyReLU(0.2),
-            nn.Linear(128, 64),
+            nn.Linear(128, 32),
             nn.LeakyReLU(0.2),
-            nn.Linear(64, 1),
+            nn.Linear(32, 1),
             nn.Sigmoid(),
         ).double()
 

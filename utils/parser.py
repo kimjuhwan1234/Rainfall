@@ -5,7 +5,7 @@ from Module.GAN import *
 parser = argparse.ArgumentParser()
 parser.add_argument("--input_dim", type=int, default=58, help="input_size")
 parser.add_argument("--output_dim", type=int, default=10, help="hidden_size")
-parser.add_argument("--z_dim", type=int, default=64, help="hidden_size")
+parser.add_argument("--z_dim", type=int, default=32, help="hidden_size")
 parser.add_argument("--num_layers", type=int, default=2, help="num_layers")
 parser.add_argument("--bidirectional", type=bool, default=True, help="bidirectional")
 
@@ -24,9 +24,9 @@ opt_train = parser.parse_args()
 print(opt_train)
 # ---------------------------------------------------------------------------------------------------------------------#
 model = VAE(opt_model.z_dim)
-model.load_state_dict(torch.load('Weight/VAE.pth'))
+# model.load_state_dict(torch.load('Weight/VAE.pth'))
 model2 = GAN(opt_model.input_dim)
-model2.load_state_dict(torch.load('Weight/GAN.pth'))
+# model2.load_state_dict(torch.load('Weight/GAN.pth'))
 # ---------------------------------------------------------------------------------------------------------------------#
 config = dict()
 config['model'] = opt_model
