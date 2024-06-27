@@ -1,7 +1,7 @@
 import joblib
 import numpy as np
 import lightgbm as lgb
-from sklearn.metrics import log_loss
+from sklearn.metrics import f1_score, log_loss
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
@@ -103,7 +103,7 @@ class Esemble:
 
         if self.method == 2:
             params = {
-                'task_type': 'CPU',
+                'task_type': 'GPU',
                 'objective': 'MultiClass',
                 'eval_metric': 'MultiClass',
                 'learning_rate': 0.01,
@@ -126,12 +126,13 @@ class Esemble:
             bst.fit(self.X_train, self.y_train)
             joblib.dump(bst, f'File/DT/dt_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/DT/dt_{self.name}_params.txt', best_params)
-            print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
+            score = f1_score(self.y_test, bst.predict(self.X_test), average='weighted')
+            print(f'{score:.4f}')
             print("Model saved!")
 
         if self.method == 1:
             best_params.update({
-                'device': 'gpu',
+                'device': 'cpu',
                 'objective': 'multiclass',
                 'metric': 'multi_logloss',
                 'num_class': 10,
@@ -145,7 +146,8 @@ class Esemble:
             bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)])
             joblib.dump(bst, f'File/LGBM/lgb_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/LGBM/lgb_{self.name}_params.txt', best_params)
-            print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
+            score = f1_score(self.y_test, bst.predict(self.X_test), average='weighted')
+            print(f'{score:.4f}')
             print("Model saved!")
 
         if self.method == 3:
@@ -163,7 +165,8 @@ class Esemble:
             bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
             joblib.dump(bst, f'File/XGB/xgb_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/XGB/xgb_{self.name}_params.txt', best_params)
-            print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
+            score = f1_score(self.y_test, bst.predict(self.X_test), average='weighted')
+            print(f'{score:.4f}')
             print("Model saved!")
 
         if self.method == 2:
@@ -179,5 +182,6 @@ class Esemble:
             bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
             joblib.dump(bst, f'File/CAT/cat_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/CAT/cat_{self.name}_params.txt', best_params)
-            print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
+            score = f1_score(self.y_test, bst.predict(self.X_test), average='weighted')
+            print(f'{score:.4f}')
             print("Model saved!")
