@@ -1,5 +1,6 @@
 import joblib
 import numpy as np
+import lightgbm as lgb
 from sklearn.metrics import log_loss
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
@@ -32,8 +33,13 @@ class Esemble:
         return loss
 
     def lightGBM(self, params):
-        bst = LGBMClassifier(**params, n_estimators=self.num_rounds, verbose_eval=100)
-        bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)])
+        bst = LGBMClassifier(**params, n_estimators=self.num_rounds)
+        callbacks = [
+            lgb.early_stopping(stopping_rounds=10, verbose=True),
+            lgb.log_evaluation(100)
+        ]
+
+        bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], callbacks=callbacks)
         y_pred = bst.predict_proba(self.X_test)
 
         loss = log_loss(self.y_test, y_pred)
@@ -67,21 +73,20 @@ class Esemble:
 
         if self.method == 1:
             params = {
-                'device': 'gpu',
+                'device': 'cpu',
                 'objective': 'multiclass',
                 'metric': 'multi_logloss',
                 'num_class': 10,
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
-                'early_stopping_rounds': 10,
 
                 'max_depth': trial.suggest_int('max_depth', 5, 20),
-                'lambda_l2': trial.suggest_float('reg_lambda', 1e-5, 10.0),
+                'reg_lambda': trial.suggest_float('reg_lambda', 1e-5, 10.0),
 
             }
             accuracy = self.lightGBM(params)
 
-        if self.method == 2:
+        if self.method == 3:
             params = {
                 'tree_method': 'gpu_hist',
                 'objective': 'multi:softprob',
@@ -96,16 +101,16 @@ class Esemble:
             }
             accuracy = self.XGBoost(params)
 
-        if self.method == 3:
+        if self.method == 2:
             params = {
-                'task_type': 'GPU',
+                'task_type': 'CPU',
                 'objective': 'MultiClass',
                 'eval_metric': 'MultiClass',
                 'learning_rate': 0.01,
                 'early_stopping_rounds': 10,
 
-                'depth': trial.suggest_int('max_depth', 5, 13),
-                'l2_leaf_reg': trial.suggest_float('reg_lambda', 1e-5, 10.0),
+                'depth': trial.suggest_int('depth', 5, 13),
+                'l2_leaf_reg': trial.suggest_float('l2_leaf_reg', 1e-5, 10.0),
             }
             accuracy = self.CatBoost(params)
 
@@ -132,7 +137,7 @@ class Esemble:
                 'num_class': 10,
                 'boosting_type': 'gbdt',
                 'learning_rate': 0.01,
-                'early_stopping_rounds': 10,
+                'early_stopping_round': 10,
 
             })
 
@@ -143,7 +148,7 @@ class Esemble:
             print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
             print("Model saved!")
 
-        if self.method == 2:
+        if self.method == 3:
             best_params.update({
                 'tree_method': 'gpu_hist',
                 'objective': 'multi:softprob',
@@ -161,7 +166,7 @@ class Esemble:
             print(f'{log_loss(self.y_test, bst.predict_proba(self.X_test)):.4f}')
             print("Model saved!")
 
-        if self.method == 3:
+        if self.method == 2:
             best_params.update({
                 'task_type': 'GPU',
                 'objective': 'MultiClass',
