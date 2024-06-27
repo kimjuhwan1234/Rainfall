@@ -23,10 +23,10 @@ if __name__ == "__main__":
             E = Esemble(i, X_train, X_val, y_train, y_val, 1000, code)
 
             study = optuna.create_study(
-                direction='minimize',
+                direction='maximize',
                 pruner=optuna.pruners.MedianPruner(),
             )
-            study.optimize(E.objective, n_trials=5)
+            study.optimize(E.objective, n_trials=3)
 
             print('Number of finished trials:', len(study.trials))
             print('Best trial:', study.best_trial.params)
