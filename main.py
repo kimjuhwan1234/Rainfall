@@ -6,7 +6,7 @@ from Module.Esemble import *
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
-    GMM_list = ['GMM0', 'GMM2', 'GMM4', 'GMM6', 'GMM7', 'GMM8', 'GMM9', 'GMM10', 'GMM11', 'GMM14']
+    GMM_list = [f'Random{i}' for i in range(20)]
     directory = 'Database/train/'
     files = sorted(filename for filename in os.listdir(directory) if filename.endswith('.csv'))
 
@@ -18,9 +18,9 @@ if __name__ == "__main__":
         X_train = pd.read_csv(os.path.join(directory, file_list[0]), index_col=0)
         y_train = pd.read_csv(os.path.join(directory, file_list[1]), index_col=0)
 
-        for i in range(2, 4):
+        for i in range(1, 4):
             # {DT=0, lightGBM=1, CatBoost=2, XGBoost=3}
-            E = Esemble(i, X_train, X_val, y_train, y_val, 1000, code)
+            E = Esemble(i, X_train, X_val, y_train, y_val, 100, code)
 
             study = optuna.create_study(
                 direction='maximize',

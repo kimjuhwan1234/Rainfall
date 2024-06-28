@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
 def standard_scale_train(X_train: pd.DataFrame, feature_names: list):
@@ -9,7 +9,7 @@ def standard_scale_train(X_train: pd.DataFrame, feature_names: list):
     :param feature_names: 정규화를 수행할 특성들의 리스트
     :return: 정규화된 훈련 데이터셋, 훈련된 StandardScaler 객체
     """
-    scaler = StandardScaler()
+    scaler = MinMaxScaler()
     train_data_scaled = X_train.copy()
     train_data_scaled[feature_names] = scaler.fit_transform(X_train[feature_names])
     return train_data_scaled, scaler

@@ -24,9 +24,9 @@ opt_train = parser.parse_args()
 print(opt_train)
 # ---------------------------------------------------------------------------------------------------------------------#
 model = VAE(opt_model.z_dim)
-# model.load_state_dict(torch.load('Weight/VAE.pth'))
+model.load_state_dict(torch.load('Weight/VAE.pth'))
 model2 = GAN(opt_model.input_dim)
-# model2.load_state_dict(torch.load('Weight/GAN.pth'))
+model2.load_state_dict(torch.load('Weight/GAN.pth'))
 # ---------------------------------------------------------------------------------------------------------------------#
 config = dict()
 config['model'] = opt_model

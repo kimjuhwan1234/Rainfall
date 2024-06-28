@@ -1,7 +1,7 @@
 import joblib
 import numpy as np
 import lightgbm as lgb
-from sklearn.metrics import precision_score
+from sklearn.metrics import f1_score
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
@@ -29,7 +29,7 @@ class Esemble:
         bst.fit(self.X_train, self.y_train)
         y_pred = bst.predict(self.X_test)
 
-        score = precision_score(self.y_test, y_pred, average='weighted')
+        score = f1_score(self.y_test, y_pred, average='weighted')
         print(f'{score:.4f}')
         return score
 
@@ -42,7 +42,7 @@ class Esemble:
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], callbacks=callbacks)
         y_pred = bst.predict(self.X_test)
 
-        score = precision_score(self.y_test, y_pred, average='weighted')
+        score = f1_score(self.y_test, y_pred, average='weighted')
         print(f'{score:.4f}')
         return score
 
@@ -51,7 +51,7 @@ class Esemble:
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
         y_pred = bst.predict(self.X_test)
 
-        score = precision_score(self.y_test, y_pred, average='weighted')
+        score = f1_score(self.y_test, y_pred, average='weighted')
         print(f'{score:.4f}')
         return score
 
@@ -60,7 +60,7 @@ class Esemble:
         bst.fit(self.X_train, self.y_train, eval_set=[(self.X_test, self.y_test)], verbose=100)
         y_pred = bst.predict(self.X_test)
 
-        score = precision_score(self.y_test, y_pred, average='weighted')
+        score = f1_score(self.y_test, y_pred, average='weighted')
         print(f'{score:.4f}')
         return score
 
@@ -117,7 +117,7 @@ class Esemble:
             joblib.dump(bst, f'File/DT/dt_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/DT/dt_{self.name}_params.txt', best_params)
             y_pred = bst.predict(self.X_test)
-            score = precision_score(self.y_test, y_pred, average='weighted')
+            score = f1_score(self.y_test, y_pred, average='weighted')
             print(f'{score:.4f}')
             print("Model saved!")
 
@@ -138,7 +138,7 @@ class Esemble:
             joblib.dump(bst, f'File/LGBM/lgb_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/LGBM/lgb_{self.name}_params.txt', best_params)
             y_pred = bst.predict(self.X_test)
-            score = precision_score(self.y_test, y_pred, average='weighted')
+            score = f1_score(self.y_test, y_pred, average='weighted')
             print(f'{score:.4f}')
             print("Model saved!")
 
@@ -158,7 +158,7 @@ class Esemble:
             joblib.dump(bst, f'File/XGB/xgb_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/XGB/xgb_{self.name}_params.txt', best_params)
             y_pred = bst.predict(self.X_test)
-            score = precision_score(self.y_test, y_pred, average='weighted')
+            score = f1_score(self.y_test, y_pred, average='weighted')
             print(f'{score:.4f}')
             print("Model saved!")
 
@@ -176,6 +176,6 @@ class Esemble:
             joblib.dump(bst, f'File/CAT/cat_{self.name}_model.pkl')
             self.save_dict_to_txt(f'File/CAT/cat_{self.name}_params.txt', best_params)
             y_pred = bst.predict(self.X_test)
-            score = precision_score(self.y_test, y_pred, average='weighted')
+            score = f1_score(self.y_test, y_pred, average='weighted')
             print(f'{score:.4f}')
             print("Model saved!")

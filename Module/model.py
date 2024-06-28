@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 def loss_function(x_recon, x, mu, logvar, method: int):
     if method == 0:
         x = x[:, :20]
@@ -56,6 +55,7 @@ class Decoder(nn.Module):
         if method == 0:
             h = self.fc1_con(x)
             x_recon = self.fc2_con(F.leaky_relu(h, 0.2))
+            x_recon=self.sigmoid(x_recon)
             return x_recon
 
         if method == 1:
